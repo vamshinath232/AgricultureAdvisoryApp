@@ -142,7 +142,7 @@ fun LaunchView() {
                 Image(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     painter = painterResource(id = R.drawable.agriculture_advisory),
-                    contentDescription = "Stress Level Tester",
+                    contentDescription = "Agriculture Advisor App",
                 )
 
                 Spacer(modifier = Modifier.height(18.dp))
