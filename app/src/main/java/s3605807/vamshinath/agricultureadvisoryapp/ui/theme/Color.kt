@@ -1,4 +1,4 @@
-package com.example.agricultureadvisoryapp.ui.theme
+package s3605807.vamshinath.agricultureadvisoryapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

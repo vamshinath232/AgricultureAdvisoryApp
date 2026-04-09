@@ -1,0 +1,281 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
+package s3605807.vamshinath.agricultureadvisoryapp.cropAdvisory
+
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+// ---------------------- DATA MODEL ----------------------
+
+data class AdvisoryResult(
+    val mistakes: List<String>,
+    val recommendations: List<String>,
+    val aiTips: List<String>,
+    val score: Int
+)
+
+// ---------------------- LOGIC ENGINE ----------------------
+
+fun generateAdvisory(crop: String, stage: String, soil: String): AdvisoryResult {
+
+    val mistakes = mutableListOf<String>()
+    val recommendations = mutableListOf<String>()
+    val aiTips = mutableListOf<String>()
+
+    var score = 10
+
+    // 🌾 WHEAT
+    if (crop == "Wheat") {
+
+        if (soil == "Sandy") {
+            mistakes.add("Sandy soil reduces nutrient retention")
+            recommendations.add("Add compost or organic matter")
+            aiTips.add("AI Suggestion: Use mulch to retain moisture")
+            score -= 2
+        }
+
+        if (stage == "Flowering") {
+            recommendations.add("Maintain consistent irrigation")
+            aiTips.add("AI Suggestion: Monitor humidity to prevent fungal disease")
+        }
+
+        if (soil == "Clay") {
+            recommendations.add("Ensure proper drainage")
+        }
+
+        aiTips.add("AI Suggestion: Use disease-resistant wheat varieties in UK climate")
+    }
+
+    // 🥔 POTATO
+    if (crop == "Potato") {
+
+        if (soil == "Clay") {
+            mistakes.add("Clay soil may cause waterlogging")
+            recommendations.add("Use raised beds for drainage")
+            aiTips.add("AI Suggestion: Add sand to improve soil structure")
+            score -= 2
+        }
+
+        if (stage == "Seedling") {
+            recommendations.add("Avoid overwatering early stage")
+        }
+
+        aiTips.add("AI Suggestion: Monitor for blight during rainy UK weather")
+    }
+
+    // 🌍 GENERAL RULES
+    if (soil == "Sandy") {
+        recommendations.add("Increase watering frequency")
+        score -= 1
+    }
+
+    if (soil == "Clay") {
+        recommendations.add("Avoid over-irrigation")
+    }
+
+    return AdvisoryResult(mistakes, recommendations, aiTips, score.coerceAtLeast(0))
+}
+
+// ---------------------- UI ----------------------
+
+@Composable
+fun CropAdvisoryScreen(onBack: () -> Unit) {
+
+    var crop by remember { mutableStateOf("") }
+    var stage by remember { mutableStateOf("") }
+    var soil by remember { mutableStateOf("") }
+
+    val crops = listOf("Wheat", "Barley", "Potato", "Oilseed Rape", "Maize")
+    val stages = listOf("Seedling", "Vegetative", "Flowering", "Maturity")
+    val soils = listOf("Clay", "Sandy", "Loamy", "Silty")
+
+    val result = remember(crop, stage, soil) {
+        if (crop.isNotEmpty()) generateAdvisory(crop, stage, soil) else null
+    }
+
+    LazyColumn {
+
+        item { Header() }
+
+        item {
+            Column(modifier = Modifier.padding(16.dp)) {
+
+                DropdownField("Crop", Icons.Default.Eco, crops, crop) { crop = it }
+                Spacer(modifier = Modifier.height(12.dp))
+
+                DropdownField("Growth Stage", Icons.Default.TrendingUp, stages, stage) { stage = it }
+                Spacer(modifier = Modifier.height(12.dp))
+
+                DropdownField("Soil Type", Icons.Default.Landscape, soils, soil) { soil = it }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                GenerateButton()
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                result?.let {
+                    ScoreCard(it.score)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    SmartAdvisoryCard(it)
+                }
+            }
+        }
+    }
+}
+
+// ---------------------- HEADER ----------------------
+
+@Composable
+fun Header() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Brush.horizontalGradient(
+                    listOf(Color(0xFF2E7D32), Color(0xFF66BB6A))
+                )
+            )
+            .padding(20.dp)
+    ) {
+        Text("Crop Advisory 🌾", color = Color.White, fontSize = 22.sp)
+    }
+}
+
+// ---------------------- DROPDOWN ----------------------
+
+@Composable
+fun DropdownField(
+    label: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    options: List<String>,
+    selected: String,
+    onSelected: (String) -> Unit
+) {
+
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(expanded, { expanded = it }) {
+
+        OutlinedTextField(
+            value = selected,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label) },
+            leadingIcon = { Icon(icon, null) },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded)
+            },
+            modifier = Modifier.fillMaxWidth().menuAnchor()
+        )
+
+        ExposedDropdownMenu(expanded, { expanded = false }) {
+            options.forEach {
+                DropdownMenuItem(
+                    text = { Text(it) },
+                    onClick = {
+                        onSelected(it)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+// ---------------------- BUTTON ----------------------
+
+@Composable
+fun GenerateButton() {
+    val scale by animateFloatAsState(1f, animationSpec = spring())
+
+    Button(
+        onClick = {},
+        modifier = Modifier.fillMaxWidth().scale(scale)
+    ) {
+        Icon(Icons.Default.AutoAwesome, null)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text("Generate Advisory")
+    }
+}
+
+// ---------------------- SCORE CARD ----------------------
+
+@Composable
+fun ScoreCard(score: Int) {
+
+    val color = when {
+        score >= 8 -> Color(0xFF4CAF50)
+        score >= 5 -> Color(0xFFFF9800)
+        else -> Color(0xFFF44336)
+    }
+
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.1f))
+    ) {
+
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text("Farming Score", fontWeight = FontWeight.Bold)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text("$score / 10", fontSize = 28.sp, color = color)
+        }
+    }
+}
+
+// ---------------------- SMART CARD ----------------------
+
+@Composable
+fun SmartAdvisoryCard(result: AdvisoryResult) {
+
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(6.dp)
+    ) {
+
+        Column(modifier = Modifier.padding(16.dp)) {
+
+            Text("Smart Analysis", fontWeight = FontWeight.Bold)
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            if (result.mistakes.isNotEmpty()) {
+                Text("❌ Mistakes", color = Color.Red)
+                result.mistakes.forEach { Text("• $it") }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            Text("✅ Recommendations", color = Color(0xFF2E7D32))
+            result.recommendations.forEach { Text("• $it") }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text("🤖 AI Suggestions", color = Color(0xFF1976D2))
+            result.aiTips.forEach { Text("• $it") }
+        }
+    }
+}

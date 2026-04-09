@@ -1,4 +1,4 @@
-package com.example.agricultureadvisoryapp
+package s3605807.vamshinath.agricultureadvisoryapp
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

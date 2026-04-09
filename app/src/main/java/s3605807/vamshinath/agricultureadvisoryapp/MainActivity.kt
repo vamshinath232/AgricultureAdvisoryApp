@@ -1,7 +1,5 @@
-package com.example.agricultureadvisoryapp
+package s3605807.vamshinath.agricultureadvisoryapp
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,14 +19,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,9 +32,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.agricultureadvisoryapp.ui.theme.AgricultureAdvisoryAppTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import s3605807.vamshinath.agricultureadvisoryapp.ui.theme.AgricultureAdvisoryAppTheme
 import kotlinx.coroutines.delay
-import kotlin.jvm.java
+import s3605807.vamshinath.agricultureadvisoryapp.cropAdvisory.CropAdvisoryScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,46 +45,113 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AgricultureAdvisoryAppTheme {
-                MainScreen()
+                AppNavigationMain()
             }
         }
     }
 }
 
+
 @Composable
-fun MainScreen() {
-    var splashStatus by remember { mutableStateOf(true) }
+fun AppNavigationMain() {
 
-    val context = LocalContext.current as Activity
+    val navController = rememberNavController()
+    val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        delay(3000)
-        splashStatus = false
-    }
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Splash.route
+    ) {
 
-    if (splashStatus) {
-        LaunchView()
-    } else {
+        composable(Screen.Splash.route) {
+            SplashScreen(
+                onNavigate = {
+                    if (UserDetails.getUserLoginStatus(context)) {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    }
+                }
+            )
+        }
 
-//        val currentStatus = StressLevelTesterData.readLS(context)
-//
-//        if (currentStatus) {
-//            openHome(context)
-//        } else {
-//            openLogin(context)
-//
+        composable(Screen.Login.route) {
+            UserLoginScreen(
+                onLoginSuccess = {
+
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                },
+                onRegisterClick = {
+                    navController.navigate(Screen.Register.route)
+                }
+            )
+        }
+
+        composable(Screen.Register.route) {
+            CreateAccountScreen(
+                onBackToLogin = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(Screen.Home.route) {
+            DashboardScreen(navController)
+        }
+
+        composable(Screen.CropAdvisory.route) {
+            CropAdvisoryScreen(onBack = {
+                navController.popBackStack()
+            })
+        }
+
+//        composable(Screen.BMICategory.route) {
+//            BMICategoryScreen(
+//                onBack = {
+//                    navController.popBackStack()
+//                }
+//            )
+//        }
+//        composable(Screen.Profile.route) {
+//            ProfileScreen(navController)
+//        }
+//        composable(Screen.About.route) {
+//            AboutScreen(navController)
 //        }
     }
 }
 
-fun openLogin(context: Activity) {
-//    context.startActivity(Intent(context, LoginActivity::class.java))
-//    context.finish()
+
+sealed class Screen(val route: String) {
+    object Splash : Screen("splash")
+    object Login : Screen("login")
+    object Register : Screen("register")
+    object Home : Screen("home")
+
+    object CropAdvisory : Screen("crop_advisory")
+    object BMICategory : Screen("bmi_category")
+    object Profile : Screen("profile")
+    object About : Screen("about")
 }
 
-fun openHome(context: Activity) {
-//    context.startActivity(Intent(context, BaseActivity::class.java))
-//    context.finish()
+
+@Composable
+fun SplashScreen(onNavigate: () -> Unit) {
+
+    LaunchedEffect(Unit) {
+        delay(3000)
+        onNavigate()
+    }
+
+    LaunchView()
+
+
 }
 
 @Composable
