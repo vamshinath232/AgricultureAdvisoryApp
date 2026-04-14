@@ -111,19 +111,7 @@ fun AppNavigationMain() {
             })
         }
 
-//        composable(Screen.BMICategory.route) {
-//            BMICategoryScreen(
-//                onBack = {
-//                    navController.popBackStack()
-//                }
-//            )
-//        }
-//        composable(Screen.Profile.route) {
-//            ProfileScreen(navController)
-//        }
-//        composable(Screen.About.route) {
-//            AboutScreen(navController)
-//        }
+
     }
 }
 
@@ -135,9 +123,7 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
 
     object CropAdvisory : Screen("crop_advisory")
-    object BMICategory : Screen("bmi_category")
-    object Profile : Screen("profile")
-    object About : Screen("about")
+
 }
 
 
