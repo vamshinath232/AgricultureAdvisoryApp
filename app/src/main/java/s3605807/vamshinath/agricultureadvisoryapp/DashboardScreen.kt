@@ -202,7 +202,7 @@ fun PremiumQuickActions(navController: NavController) {
             // Row 2
             Row(modifier = Modifier.fillMaxWidth()) {
                 ActionItem(actions[2], Modifier.weight(1f), onClicked = {
-
+                    navController.navigate(Screen.WeatherForecast.route)
                 })
                 ActionItem(actions[3], Modifier.weight(1f), onClicked = {
 

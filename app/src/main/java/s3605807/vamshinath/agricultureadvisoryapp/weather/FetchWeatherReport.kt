@@ -81,6 +81,13 @@ interface WeatherApi {
         @Query("key") apiKey: String,
         @Query("q") location: String // "lat,lon"
     ): WeatherResponse
+
+    @GET("v1/forecast.json")
+    suspend fun get7DayForecast(
+        @Query("key") apiKey: String,
+        @Query("q") location: String,
+        @Query("days") days: Int
+    ): ForecastResponse
 }
 
 object RetrofitInstance {

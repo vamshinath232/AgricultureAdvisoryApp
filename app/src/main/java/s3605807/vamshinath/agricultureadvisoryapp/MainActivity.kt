@@ -38,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import s3605807.vamshinath.agricultureadvisoryapp.ui.theme.AgricultureAdvisoryAppTheme
 import kotlinx.coroutines.delay
 import s3605807.vamshinath.agricultureadvisoryapp.cropAdvisory.CropAdvisoryScreen
+import s3605807.vamshinath.agricultureadvisoryapp.weather.WeatherForecastScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,6 +112,12 @@ fun AppNavigationMain() {
             })
         }
 
+        composable(Screen.WeatherForecast.route) {
+            WeatherForecastScreen(onBack = {
+                navController.popBackStack()
+            })
+        }
+
 
     }
 }
@@ -123,6 +130,8 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
 
     object CropAdvisory : Screen("crop_advisory")
+
+    object WeatherForecast : Screen("weather_forecast")
 
 }
 
