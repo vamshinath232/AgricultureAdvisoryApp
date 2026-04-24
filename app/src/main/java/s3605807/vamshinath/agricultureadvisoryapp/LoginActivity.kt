@@ -1,5 +1,8 @@
 package s3605807.vamshinath.agricultureadvisoryapp
 
+import android.app.Activity
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -32,21 +35,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.database.FirebaseDatabase
 
 
 @Composable
-fun UserLoginScreen(onLoginSuccess: () -> Unit,
-                    onRegisterClick: () -> Unit) {
-    var jsemail by remember { mutableStateOf("") }
-    var jspassword by remember { mutableStateOf("") }
+fun UserLoginScreen(
+    onLoginSuccess: () -> Unit,
+    onRegisterClick: () -> Unit
+) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
-//    val context = LocalContext.current as Activity
+    val context = LocalContext.current as Activity
 
     Column(
         modifier = Modifier
@@ -80,8 +87,8 @@ fun UserLoginScreen(onLoginSuccess: () -> Unit,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp),
-                value = jsemail,
-                onValueChange = { jsemail = it },
+                value = email,
+                onValueChange = { email = it },
                 label = { Text("Enter Email") },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
@@ -113,8 +120,8 @@ fun UserLoginScreen(onLoginSuccess: () -> Unit,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp),
-                value = jspassword,
-                onValueChange = { jspassword = it },
+                value = password,
+                onValueChange = { password = it },
                 label = { Text("Enter Password") },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
@@ -145,27 +152,27 @@ fun UserLoginScreen(onLoginSuccess: () -> Unit,
             Button(
                 onClick = {
                     when {
-                        jsemail.isEmpty() -> {
-//                            Toast.makeText(context, " Please Enter Mail", Toast.LENGTH_SHORT).show()
+                        email.isEmpty() -> {
+                            Toast.makeText(context, " Please Enter Mail", Toast.LENGTH_SHORT).show()
                         }
 
-                        jspassword.isEmpty() -> {
-//                            Toast.makeText(context, " Please Enter Password", Toast.LENGTH_SHORT)
-//                                .show()
+                        password.isEmpty() -> {
+                            Toast.makeText(context, " Please Enter Password", Toast.LENGTH_SHORT)
+                                .show()
                         }
 
                         else -> {
 
-                            onLoginSuccess.invoke()
+//                            onLoginSuccess.invoke()
 
-//                            val testerData = TesterData(
-//                                "",
-//                                jsemail,
-//                                "",
-//                                jspassword
-//                            )
-//
-//                            loginTester(testerData,context)
+                            val testerData = TesterData(
+                                "",
+                                email,
+                                "",
+                                password
+                            )
+
+                            loginTester(testerData, context,onLoginSuccess)
                         }
 
                     }
@@ -207,8 +214,8 @@ fun UserLoginScreen(onLoginSuccess: () -> Unit,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black, // Blue text color for "Sign Up"
                 modifier = Modifier.clickable {
-//                    context.startActivity(Intent(context, RegisterActivity::class.java))
-//                    context.finish()
+
+                    onRegisterClick.invoke()
                 }
             )
         }
@@ -219,42 +226,45 @@ fun UserLoginScreen(onLoginSuccess: () -> Unit,
     }
 }
 
-//fun loginTester(testerData: TesterData, context: Context) {
-//
-//    val firebaseDatabase = FirebaseDatabase.getInstance()
-//    val databaseReference = firebaseDatabase.getReference("TesterData").child(testerData.emailid.replace(".", ","))
-//
-//    databaseReference.get().addOnCompleteListener { task ->
-//        if (task.isSuccessful) {
-//            val dbData = task.result?.getValue(TesterData::class.java)
-//            if (dbData != null) {
-//                if (dbData.password == testerData.password) {
-//
-//                    StressLevelTesterData.writeLS(context, true)
-//                    StressLevelTesterData.writeMail(context, dbData.emailid)
-//                    StressLevelTesterData.writeUserName(context, dbData.name)
-//
-//
-//                    context.startActivity(Intent(context, BaseActivity::class.java))
-//
-//                    Toast.makeText(context, "Login Sucessfully", Toast.LENGTH_SHORT).show()
-//
-//                } else {
-//                    Toast.makeText(context, "Seems Incorrect Credentials", Toast.LENGTH_SHORT).show()
-//                }
-//            } else {
-//                Toast.makeText(context, "Your account not found", Toast.LENGTH_SHORT).show()
-//            }
-//        } else {
-//            Toast.makeText(
-//                context,
-//                "Something went wrong",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }
-//
-//    }
-//}
+fun loginTester(testerData: TesterData, context: Context, onLoginSuccess: () -> Unit) {
+
+    val firebaseDatabase = FirebaseDatabase.getInstance()
+    val databaseReference =
+        firebaseDatabase.getReference("FarmerAccounts").child(testerData.emailid.replace(".", ","))
+
+    databaseReference.get().addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            val dbData = task.result?.getValue(TesterData::class.java)
+            if (dbData != null) {
+                if (dbData.password == testerData.password) {
+
+                    UserDetails.saveUserLoginStatus(context, true)
+                    UserDetails.saveEmail(context, dbData.emailid)
+                    UserDetails.saveName(context, dbData.name)
+
+
+                    Toast.makeText(context, "Login Sucessfully", Toast.LENGTH_SHORT).show()
+
+                    onLoginSuccess.invoke()
+
+
+                } else {
+                    Toast.makeText(context, "Seems Incorrect Credentials", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            } else {
+                Toast.makeText(context, "Your account not found", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(
+                context,
+                "Something went wrong",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+    }
+}
 
 
 @Preview(showBackground = true)

@@ -24,6 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import android.util.Log
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,6 +36,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import s3605807.vamshinath.agricultureadvisoryapp.LocationHelper
+import java.util.Locale
 
 /* ---------------------------------------------------------
    DATA MODELS (WeatherAPI Forecast Response)
@@ -137,18 +142,39 @@ fun WeatherForecastScreen(
     }
 
 
-
-
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        "7-Day Weather Forecast",
-                        fontWeight = FontWeight.Bold
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Brush.horizontalGradient(
+                            listOf(Color(0xFF2E7D32), Color(0xFF66BB6A))
+                        )
                     )
-                }
-            )
+            ) {
+
+                TopAppBar(
+                    title = {
+                        Text(
+                            "3-Day Weather Forecast",
+                            color = Color.White
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent // 🔥 important for gradient
+                    )
+                )
+            }
         }
     ) { padding ->
 
@@ -185,9 +211,12 @@ fun WeatherForecastScreen(
                     modifier = Modifier.padding(12.dp)
                 ) {
 
-                    items(forecastData!!.forecast.forecastday) { day ->
+                    itemsIndexed(forecastData!!.forecast.forecastday) { index, day ->
 
-                        ForecastDayCard(day)
+                        ForecastDayCard(
+                            day = day,
+                            index = index
+                        )
 
                         Spacer(modifier = Modifier.height(10.dp))
                     }
@@ -204,37 +233,68 @@ fun WeatherForecastScreen(
 @Composable
 fun WeatherHeaderCard() {
 
-    Box(
+    val gradient = Brush.horizontalGradient(
+        listOf(
+            Color(0xFF2E7D32),
+            Color(0xFF66BB6A)
+        )
+    )
+
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .background(
-                Brush.horizontalGradient(
-                    listOf(
-                        Color(0xFF1976D2),
-                        Color(0xFF64B5F6)
-                    )
-                )
-            )
-            .padding(18.dp)
+            .padding(12.dp),
+        shape = RoundedCornerShape(22.dp),
+        elevation = CardDefaults.cardElevation(8.dp)
     ) {
 
-        Column {
+        Box(
+            modifier = Modifier
+                .background(gradient)
+                .padding(18.dp)
+        ) {
 
-            Text(
-                text = "Weekly Weather Outlook",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-            Spacer(modifier = Modifier.height(6.dp))
+                // 🌦 Icon Container (Glass effect)
+                Box(
+                    modifier = Modifier
+                        .size(52.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Cloud,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
 
-            Text(
-                text = "Plan irrigation and crop protection based on upcoming weather.",
-                color = Color.White.copy(alpha = 0.9f)
-            )
+                Spacer(modifier = Modifier.width(14.dp))
+
+                Column {
+
+                    Text(
+                        text = "Weekly Weather Outlook",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(
+                        text = "Plan irrigation and crop protection based on upcoming weather.",
+                        color = Color.White.copy(alpha = 0.9f),
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp
+                    )
+                }
+            }
         }
     }
 }
@@ -245,82 +305,158 @@ fun WeatherHeaderCard() {
 
 @Composable
 fun ForecastDayCard(
-    day: ForecastDay
+    day: ForecastDay,
+    index: Int // 👈 pass position for variation + labels
 ) {
 
+    val condition = day.day.condition.text.lowercase()
+    val temp = day.day.maxtemp_c
+
+    // 🌤 Label (Premium UX)
+    val dayLabel = when (index) {
+        0 -> "Today"
+        1 -> "Tomorrow"
+        else -> formatDate(day.date)
+    }
+
+    // 🎨 Dynamic Gradient with variation
+    val gradient = when {
+        condition.contains("sun") || condition.contains("clear") -> {
+            val shades = listOf(
+                listOf(Color(0xFFFFB300), Color(0xFFFFD54F)),
+                listOf(Color(0xFFFFA000), Color(0xFFFFE082)),
+                listOf(Color(0xFFFF8F00), Color(0xFFFFD740))
+            )
+            Brush.horizontalGradient(shades[index % shades.size])
+        }
+
+        condition.contains("rain") -> Brush.horizontalGradient(
+            listOf(Color(0xFF1565C0), Color(0xFF42A5F5))
+        )
+
+        temp < 10 -> Brush.horizontalGradient(
+            listOf(Color(0xFF00ACC1), Color(0xFF80DEEA))
+        )
+
+        else -> Brush.horizontalGradient(
+            listOf(Color(0xFF546E7A), Color(0xFF90A4AE))
+        )
+    }
+
     Card(
-        shape = RoundedCornerShape(18.dp),
-        elevation = CardDefaults.cardElevation(5.dp)
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(12.dp), // 🔥 more depth
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp, horizontal = 12.dp)
     ) {
 
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .background(gradient)
+                .padding(18.dp)
         ) {
 
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFFE3F2FD)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Cloud,
-                    contentDescription = null,
-                    tint = Color(0xFF1976D2)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(14.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Text(
-                    text = day.date,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-
-                Text(
-                    text = day.day.condition.text,
-                    color = Color.Gray
-                )
-            }
-
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
-
-                Text(
-                    text = "${day.day.maxtemp_c.toInt()}° / ${day.day.mintemp_c.toInt()}°",
-                    fontWeight = FontWeight.Bold
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                // 🌤 Icon Container (Improved contrast)
+                Box(
+                    modifier = Modifier
+                        .size(58.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.30f)),
+                    contentAlignment = Alignment.Center
                 ) {
 
                     Icon(
-                        imageVector = Icons.Default.WaterDrop,
+                        imageVector = getWeatherIcon(condition),
                         contentDescription = null,
-                        tint = Color.Blue,
-                        modifier = Modifier.size(16.dp)
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
                     )
+                }
 
-                    Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(14.dp))
+
+                // 📅 Date + Condition
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
 
                     Text(
-                        text = "${day.day.daily_chance_of_rain}%",
-                        fontSize = 12.sp
+                        text = dayLabel,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 17.sp // 👈 slightly bigger
                     )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = day.day.condition.text,
+                        color = Color.White.copy(alpha = 0.9f),
+                        fontSize = 13.sp
+                    )
+                }
+
+                // 🌡 Temperature + Rain
+                Column(
+                    horizontalAlignment = Alignment.End
+                ) {
+
+                    Text(
+                        text = "${day.day.maxtemp_c.toInt()}° / ${day.day.mintemp_c.toInt()}°",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp // 👈 reduced (better balance)
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Icon(
+                            imageVector = Icons.Default.WaterDrop,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        Text(
+                            text = "${day.day.daily_chance_of_rain}%",
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+fun getWeatherIcon(condition: String): ImageVector {
+
+    return when {
+        condition.contains("rain", true) -> Icons.Default.WaterDrop
+        condition.contains("cloud", true) -> Icons.Default.Cloud
+        condition.contains("sun", true) -> Icons.Default.WbSunny
+        else -> Icons.Default.Cloud
+    }
+}
+
+fun formatDate(date: String): String {
+    return try {
+        val parser = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val formatter = java.text.SimpleDateFormat("EEE, dd MMM", Locale.getDefault())
+        formatter.format(parser.parse(date)!!)
+    } catch (e: Exception) {
+        date
     }
 }
 

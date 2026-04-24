@@ -1,5 +1,9 @@
 package s3605807.vamshinath.agricultureadvisoryapp
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,18 +46,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.database.FirebaseDatabase
+import kotlin.jvm.java
 
 
 @Composable
 fun CreateAccountScreen(onBackToLogin: () -> Unit) {
 
-    var jsfullname by remember { mutableStateOf("") }
-    var age by remember { mutableStateOf("") }
-    var jsemail by remember { mutableStateOf("") }
-    var jspassword by remember { mutableStateOf("") }
-    var jsconfirmpassword by remember { mutableStateOf("") }
+    var fullname by remember { mutableStateOf("") }
+    var place by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
-//    val context = LocalContext.current as Activity
+    val context = LocalContext.current as Activity
 
 
     Column(
@@ -89,8 +95,8 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp),
-                value = jsfullname,
-                onValueChange = { jsfullname = it },
+                value = fullname,
+                onValueChange = { fullname = it },
                 label = { Text("Enter FullName") },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
@@ -122,44 +128,8 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp),
-                value = age,
-                onValueChange = { age = it },
-                label = { Text("Enter Profession") },
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White,
-                ),
-                shape = RoundedCornerShape(32.dp),
-                leadingIcon = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Spacer(modifier = Modifier.width(6.dp))
-
-                        Image(
-                            modifier = Modifier
-                                .width(24.dp)
-                                .height(24.dp),
-                            painter = painterResource(id = R.drawable.profession),
-                            contentDescription = "Profession",
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Spacer(
-                            modifier = Modifier
-                                .width(3.dp) // Width of the line
-                                .height(24.dp) // Adjust height as needed
-                                .background(Color.Gray) // Color of the line
-                        )
-                    }
-                },
-            )
-
-            Spacer(modifier = Modifier.height(0.dp))
-
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                value = jsemail,
-                onValueChange = { jsemail = it },
+                value = email,
+                onValueChange = { email = it },
                 label = { Text("Enter Email") },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
@@ -191,8 +161,46 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp),
-                value = jspassword,
-                onValueChange = { jspassword = it },
+                value = place,
+                onValueChange = { place = it },
+                label = { Text("Enter Place") },
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                ),
+                shape = RoundedCornerShape(32.dp),
+                leadingIcon = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        Image(
+                            modifier = Modifier
+                                .width(24.dp)
+                                .height(24.dp),
+                            painter = painterResource(id = R.drawable.profession),
+                            contentDescription = "Place",
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(
+                            modifier = Modifier
+                                .width(3.dp) // Width of the line
+                                .height(24.dp) // Adjust height as needed
+                                .background(Color.Gray) // Color of the line
+                        )
+                    }
+                },
+            )
+
+            Spacer(modifier = Modifier.height(0.dp))
+
+
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                value = password,
+                onValueChange = { password = it },
                 label = { Text("Enter Password") },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
@@ -223,30 +231,30 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
             Button(
                 onClick = {
                     when {
-                        jsemail.isEmpty() -> {
-//                            Toast.makeText(context, " Please Enter Mail", Toast.LENGTH_SHORT).show()
+                        email.isEmpty() -> {
+                            Toast.makeText(context, " Please Enter Mail", Toast.LENGTH_SHORT).show()
                         }
 
-                        jsfullname.isEmpty() -> {
-//                            Toast.makeText(context, " Please Enter Name", Toast.LENGTH_SHORT).show()
+                        fullname.isEmpty() -> {
+                            Toast.makeText(context, " Please Enter Name", Toast.LENGTH_SHORT).show()
                         }
 
-                        age.isEmpty() -> {
-//                            Toast.makeText(context, " Please Enter Age", Toast.LENGTH_SHORT).show()
+                        place.isEmpty() -> {
+                            Toast.makeText(context, " Please Enter Age", Toast.LENGTH_SHORT).show()
                         }
 
-                        jspassword.isEmpty() -> {
-//                            Toast.makeText(context, " Please Enter Password", Toast.LENGTH_SHORT).show()
+                        password.isEmpty() -> {
+                            Toast.makeText(context, " Please Enter Password", Toast.LENGTH_SHORT).show()
                         }
 
                         else -> {
-//                            val testerData = TesterData(
-//                                jsfullname,
-//                                jsemail,
-//                                age,
-//                                jspassword
-//                            )
-//                            registerTester(testerData,context)
+                            val testerData = TesterData(
+                                fullname,
+                                email,
+                                place,
+                                password
+                            )
+                            registerTester(testerData,context,onBackToLogin)
                         }
 
                     }
@@ -288,8 +296,7 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
                 fontWeight = FontWeight.Bold,
                 color = Color.Black, // Blue text color for "Sign Up"
                 modifier = Modifier.clickable {
-//                    context.startActivity(Intent(context, LoginActivity::class.java))
-//                    context.finish()
+                    onBackToLogin.invoke()
                 }
             )
         }
@@ -300,42 +307,42 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
     }
 }
 
-//fun registerTester(testerData: TesterData, context: Context) {
-//
-//    val firebaseDatabase = FirebaseDatabase.getInstance()
-//    val databaseReference = firebaseDatabase.getReference("TesterData")
-//
-//    databaseReference.child(testerData.emailid.replace(".", ","))
-//        .setValue(testerData)
-//        .addOnCompleteListener { task ->
-//            if (task.isSuccessful) {
-//                Toast.makeText(context, "You Registered Successfully", Toast.LENGTH_SHORT)
-//                    .show()
-//
-//                context.startActivity(Intent(context, LoginActivity::class.java))
-//                (context as Activity).finish()
-//
-//            } else {
-//                Toast.makeText(
-//                    context,
-//                    "Registration Failed",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//        }
-//        .addOnFailureListener { _ ->
-//            Toast.makeText(
-//                context,
-//                "Something went wrong",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }
-//}
+fun registerTester(testerData: TesterData, context: Context,onBackToLogin: () -> Unit) {
+
+    val firebaseDatabase = FirebaseDatabase.getInstance()
+    val databaseReference = firebaseDatabase.getReference("FarmerAccounts")
+
+    databaseReference.child(testerData.emailid.replace(".", ","))
+        .setValue(testerData)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(context, "You Registered Successfully", Toast.LENGTH_SHORT)
+                    .show()
+
+                onBackToLogin.invoke()
+
+
+            } else {
+                Toast.makeText(
+                    context,
+                    "Registration Failed",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        .addOnFailureListener { _ ->
+            Toast.makeText(
+                context,
+                "Something went wrong",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+}
 
 data class TesterData(
     var name: String = "",
     var emailid: String = "",
-    var age: String = "",
+    var place: String = "",
     var password: String = ""
 )
 

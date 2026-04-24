@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "732119426062",
+    "project_id": "agricultureadvisorapp",
+    "storage_bucket": "agricultureadvisorapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732119426062:android:13515d4e1b81f05255885f",
+        "android_client_info": {
+          "package_name": "s3605807.vamshinath.agricultureadvisoryapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpxX8qR9UZ4A5aL_TjkUOuhSNqABiO-6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

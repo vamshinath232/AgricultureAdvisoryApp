@@ -6,12 +6,33 @@ import android.content.Intent
 import android.location.LocationManager
 import android.provider.Settings
 import android.util.Log
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.LocationOff
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -22,8 +43,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModel
@@ -186,7 +214,93 @@ fun WeatherSection(viewModel: WeatherViewModel = viewModel()) {
                     rainChance = "${data.current.precip_mm} mm"
                 )
             } else {
-                Text("Loading weather...")
+//                Text("Loading weather...")
+
+                WeatherLoadingUI()
+            }
+        }
+    }
+}
+
+@Composable
+fun WeatherLoadingUI() {
+
+    val p1 = Color(0xFF4CAF50)
+    val p2 = Color(0xFF81C784)
+
+    Card(
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+
+        Box(
+            modifier = Modifier
+                .background(
+                    Brush.horizontalGradient(
+                        listOf(p1.copy(alpha = 0.1f), p2.copy(alpha = 0.1f))
+                    )
+                )
+                .padding(24.dp)
+        ) {
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                // 🌤 Animated icon
+                val infiniteTransition = rememberInfiniteTransition()
+                val scale by infiniteTransition.animateFloat(
+                    initialValue = 0.9f,
+                    targetValue = 1.1f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(800),
+                        repeatMode = RepeatMode.Reverse
+                    )
+                )
+
+                Icon(
+                    imageVector = Icons.Default.Cloud,
+                    contentDescription = null,
+                    tint = p1,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .scale(scale)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // 🔥 Title
+                Text(
+                    text = "Fetching Weather...",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = p1
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 📄 Subtitle
+                Text(
+                    text = "Getting real-time weather data for your farm",
+                    color = Color.Gray,
+                    fontSize = 13.sp
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // 🌊 Progress bar
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    color = p1,
+                    trackColor = p1.copy(alpha = 0.2f)
+                )
             }
         }
     }
@@ -224,25 +338,92 @@ fun LocationPermissionWrapper(
 @Composable
 fun PermissionRequestUI(onClick: () -> Unit) {
 
-    Column(
+    val p1 = Color(0xFF4CAF50)
+    val p2 = Color(0xFF81C784)
+
+    Card(
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp)
     ) {
 
-        Text("Location Permission Required")
+        Box(
+            modifier = Modifier
+                .background(
+                    Brush.verticalGradient(
+                        listOf(p2.copy(alpha = 0.2f), Color.White)
+                    )
+                )
+                .padding(24.dp)
+        ) {
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-        Text(
-            "We need your location to show weather and nearby market prices."
-        )
+                // 📍 Icon (Permission style)
+                Box(
+                    modifier = Modifier
+                        .size(70.dp)
+                        .clip(CircleShape)
+                        .background(p1.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = null,
+                        tint = p1,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
 
-        Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = onClick) {
-            Text("Allow Location")
+                // 🔥 Title
+                Text(
+                    text = "Location Permission Required",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = p1,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 📄 Description
+                Text(
+                    text = "Allow location access to get accurate weather updates and nearby market prices for your farm.",
+                    textAlign = TextAlign.Center,
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // 🚀 Button
+                Button(
+                    onClick = onClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = p1)
+                ) {
+
+                    Icon(
+                        imageVector = Icons.Default.MyLocation,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text("Allow Location", color = Color.White)
+                }
+            }
         }
     }
 }
@@ -276,23 +457,90 @@ fun PermissionRationale(onClick: () -> Unit) {
 @Composable
 fun LocationDisabledUI(onEnableClick: () -> Unit) {
 
-    Column(
+    val p1 = Color(0xFF4CAF50)
+    val p2 = Color(0xFF81C784)
+
+    Card(
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp)
     ) {
 
-        Text("Location is turned OFF")
+        Box(
+            modifier = Modifier
+                .background(
+                    Brush.verticalGradient(
+                        listOf(p2.copy(alpha = 0.2f), Color.White)
+                    )
+                )
+                .padding(24.dp)
+        ) {
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-        Text("Please enable location to get weather updates.")
+                // 📍 Icon
+                Box(
+                    modifier = Modifier
+                        .size(70.dp)
+                        .clip(CircleShape)
+                        .background(p1.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOff,
+                        contentDescription = null,
+                        tint = p1,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
 
-        Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = onEnableClick) {
-            Text("Turn On Location")
+                // 🔥 Title
+                Text(
+                    text = "Location Disabled",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = p1
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 📄 Description
+                Text(
+                    text = "Enable location to receive accurate weather updates and nearby agricultural insights.",
+                    textAlign = TextAlign.Center,
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // 🚀 Button
+                Button(
+                    onClick = onEnableClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = p1)
+                ) {
+
+                    Icon(
+                        imageVector = Icons.Default.MyLocation,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text("Turn On Location", color = Color.White)
+                }
+            }
         }
     }
 }

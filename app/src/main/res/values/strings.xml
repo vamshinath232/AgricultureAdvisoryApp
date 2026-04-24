@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">AgricultureAdvisoryApp</string>
+
+    <string name="scan_result">Scan Result</string>
+    <string name="back">Back</string>
+
+    <string name="disease_detected">Disease Detected</string>
+    <string name="confidence">Confidence</string>
+
+    <string name="find_remedy">Find Remedy</string>
+    <string name="save_report">Save Report</string>
+
+    <string name="leaf_preview">Leaf Preview</string>
+
+
+
+    <string name="symptoms">Symptoms</string>
+    <string name="general_management">General Management</string>
+    <string name="chemical_treatment">Chemical Treatment</string>
+    <string name="organic_treatment">Organic Treatment</string>
 </resources>

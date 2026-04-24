@@ -32,18 +32,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import s3605807.vamshinath.agricultureadvisoryapp.ui.theme.AgricultureAdvisoryAppTheme
+import androidx.navigation.navArgument
 import kotlinx.coroutines.delay
 import s3605807.vamshinath.agricultureadvisoryapp.cropAdvisory.CropAdvisoryScreen
+import s3605807.vamshinath.agricultureadvisoryapp.mlhelper.RemedyScreen
+import s3605807.vamshinath.agricultureadvisoryapp.mlhelper.SaveReportScreen
+import s3605807.vamshinath.agricultureadvisoryapp.ui.theme.AgricultureAdvisoryAppTheme
 import s3605807.vamshinath.agricultureadvisoryapp.weather.WeatherForecastScreen
+import uploadCropData
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+//        uploadCropData(this)
+
+//        val prefs = getSharedPreferences("app", Context.MODE_PRIVATE)
+//
+//        if (!prefs.getBoolean("data_uploaded", false)) {
+//            uploadCropData(this)
+//            prefs.edit { putBoolean("data_uploaded", true) }
+//        }
+
         setContent {
             AgricultureAdvisoryAppTheme {
                 AppNavigationMain()
@@ -83,7 +100,6 @@ fun AppNavigationMain() {
         composable(Screen.Login.route) {
             UserLoginScreen(
                 onLoginSuccess = {
-
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
@@ -118,6 +134,88 @@ fun AppNavigationMain() {
             })
         }
 
+        composable(Screen.MarketTrend.route)
+        {
+            PriceTrendScreen(onBackClick = {
+                navController.popBackStack()
+            })
+        }
+
+        composable(Screen.PestDetection.route)
+        {
+            PlantScanScreen(
+                navController
+            )
+        }
+
+        composable(
+            route = "scan_result/{plant}/{plantConf}/{disease}/{diseaseConf}/{imageUriString}",
+            arguments = listOf(
+                navArgument("plant") { type = NavType.StringType },
+                navArgument("plantConf") { type = NavType.FloatType },
+                navArgument("disease") { type = NavType.StringType },
+                navArgument("diseaseConf") { type = NavType.FloatType },
+                navArgument("imageUriString") { type = NavType.StringType } // New argument
+            )
+        ) { backStackEntry ->
+            val plant = backStackEntry.arguments?.getString("plant") ?: "N/A"
+            val plantConf = backStackEntry.arguments?.getFloat("plantConf") ?: 0.0f
+            val disease = backStackEntry.arguments?.getString("disease") ?: "N/A"
+            val diseaseConf = backStackEntry.arguments?.getFloat("diseaseConf") ?: 0.0f
+            val imageUriString = backStackEntry.arguments?.getString("imageUriString") ?: ""
+
+            ResultScreen(
+                navController = navController,
+                plant = plant,
+                plantConf = plantConf,
+                disease = disease,
+                diseaseConf = diseaseConf,
+                imageUriString = imageUriString
+            )
+        }
+
+        composable("remedy/{disease}") { backStackEntry ->
+            val disease = backStackEntry.arguments?.getString("disease") ?: "Unknown"
+            RemedyScreen(navController, disease)
+        }
+
+        composable(
+            route = "save_report_screen/{plant}/{disease}/{confidence}/{imageUri}",
+            arguments = listOf(
+                navArgument("plant") { type = NavType.StringType },
+                navArgument("disease") { type = NavType.StringType },
+                navArgument("confidence") { type = NavType.FloatType },
+                navArgument("imageUri") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+
+            val plantEncoded = backStackEntry.arguments?.getString("plant") ?: ""
+            val diseaseEncoded = backStackEntry.arguments?.getString("disease") ?: ""
+
+            val plant = URLDecoder.decode(plantEncoded, StandardCharsets.UTF_8.toString())
+            val disease = URLDecoder.decode(diseaseEncoded, StandardCharsets.UTF_8.toString())
+
+            val confidence = backStackEntry.arguments?.getFloat("confidence") ?: 0f
+
+            val imageEncoded = backStackEntry.arguments?.getString("imageUri") ?: ""
+            val imageUri = URLDecoder.decode(imageEncoded, StandardCharsets.UTF_8.toString())
+
+            SaveReportScreen(
+                navController = navController,
+                plant = plant,
+                disease = disease,
+                confidence = confidence,
+                imageUri = imageUri
+            )
+        }
+
+        composable(Screen.SavedReports.route) {
+            SavedReportsScreen(navController)
+        }
+
+        composable(Screen.Profile.route) {
+            ProfileScreen(UserDetails.getEmail(context)!!, navController)
+        }
 
     }
 }
@@ -128,10 +226,16 @@ sealed class Screen(val route: String) {
     object Login : Screen("login")
     object Register : Screen("register")
     object Home : Screen("home")
+    object Profile : Screen("profile")
+
+
+    object PestDetection : Screen("pest_detection")
+    object SavedReports : Screen("saved_reports")
 
     object CropAdvisory : Screen("crop_advisory")
-
     object WeatherForecast : Screen("weather_forecast")
+    object MarketTrend : Screen("market_trend")
+    object AboutApp : Screen("about_app")
 
 }
 
