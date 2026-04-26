@@ -51,13 +51,9 @@ import java.nio.charset.StandardCharsets
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-// --- Constants ---
 private const val TAG_CAMERAX = "CameraX"
 private const val TAG_ML = "ML"
 
-// ----------------------------------------------------------------------
-// Step 1: Main Screen & Permission Handling
-// ----------------------------------------------------------------------
 
 @Composable
 fun PlantScanScreen(navController: NavHostController) {
@@ -107,9 +103,6 @@ fun PermissionDeniedView(onRequest: () -> Unit) {
     }
 }
 
-// ----------------------------------------------------------------------
-// Step 2: Camera Preview, Capture & State Management
-// ----------------------------------------------------------------------
 
 @Composable
 fun CameraScreen(navController: NavHostController) {
@@ -156,9 +149,6 @@ fun CameraScreen(navController: NavHostController) {
     }
 }
 
-// ----------------------------------------------------------------------
-// Step 3: Camera Setup & Image Capture
-// ----------------------------------------------------------------------
 
 private fun setupCamera(
     context: Context,
@@ -209,9 +199,6 @@ private suspend fun captureImage(context: Context, imageCapture: ImageCapture): 
     }
 }
 
-// ----------------------------------------------------------------------
-// Step 4: Image Classification & Navigation
-// ----------------------------------------------------------------------
 
 private suspend fun classifyImageAndNavigate(
     context: Context,
@@ -231,7 +218,6 @@ private suspend fun classifyImageAndNavigate(
 
             if (diseaseClassifier.isInitialized) {
                 val bitmap = decodeAndCropBitmap(context, uri)
-//            val diseaseClassifier = PlantDiseaseClassifier(context)
                 val (resultLabel, confidence) = diseaseClassifier.classify(bitmap)
                 val (plant, disease) = parseResult(resultLabel)
                 val encodedUri = URLEncoder.encode(uri.toString(), StandardCharsets.UTF_8.toString())
@@ -285,9 +271,6 @@ private fun parseResult(resultLabel: String): Pair<String, String> {
     return Pair(plant, disease)
 }
 
-// ----------------------------------------------------------------------
-// Step 5: UI Components (Overlays & Animations)
-// ----------------------------------------------------------------------
 
 @Composable
 fun ScanAnimationOverlay() {

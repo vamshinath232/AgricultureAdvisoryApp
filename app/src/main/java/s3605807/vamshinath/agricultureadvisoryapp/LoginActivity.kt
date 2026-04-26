@@ -100,7 +100,7 @@ fun UserLoginScreen(
                         Spacer(modifier = Modifier.width(6.dp))
 
                         Icon(
-                            imageVector = Icons.Default.Email, // Replace with desired icon
+                            imageVector = Icons.Default.Email,
                             contentDescription = "Email Icon"
                         )
                         Spacer(modifier = Modifier.width(6.dp))

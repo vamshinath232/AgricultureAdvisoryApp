@@ -86,7 +86,6 @@ fun RemedyScreen(
                 .verticalScroll(rememberScrollState())
         ) {
 
-            // 🌿 HEADER CARD
             HeaderCard(info.name, p1, p2)
 
             Spacer(Modifier.height(20.dp))

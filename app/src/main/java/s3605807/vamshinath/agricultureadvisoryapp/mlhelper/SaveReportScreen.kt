@@ -120,7 +120,6 @@ fun SaveReportScreen(
                 .verticalScroll(rememberScrollState())
         ) {
 
-            // 🌿 IMAGE PREVIEW (PREMIUM)
             Card(
                 shape = RoundedCornerShape(24.dp),
                 elevation = CardDefaults.cardElevation(8.dp),
@@ -136,7 +135,6 @@ fun SaveReportScreen(
                         contentScale = ContentScale.Crop
                     )
 
-                    // Overlay label
                     Box(
                         modifier = Modifier
                             .padding(12.dp)
@@ -157,7 +155,6 @@ fun SaveReportScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // 🌿 INFO CARD (PLANT + DISEASE + CONFIDENCE)
             Card(
                 shape = RoundedCornerShape(24.dp),
                 elevation = CardDefaults.cardElevation(6.dp),
@@ -203,7 +200,6 @@ fun SaveReportScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // 📝 NOTES FIELD (PREMIUM)
             OutlinedTextField(
                 value = notes.value,
                 onValueChange = { notes.value = it },
@@ -217,7 +213,6 @@ fun SaveReportScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // 🔥 SAVE BUTTON (PREMIUM)
             Button(
                 onClick = {
                     val report = Report(

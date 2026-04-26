@@ -43,7 +43,6 @@ import s3605807.vamshinath.agricultureadvisoryapp.mlhelper.RemedyScreen
 import s3605807.vamshinath.agricultureadvisoryapp.mlhelper.SaveReportScreen
 import s3605807.vamshinath.agricultureadvisoryapp.ui.theme.AgricultureAdvisoryAppTheme
 import s3605807.vamshinath.agricultureadvisoryapp.weather.WeatherForecastScreen
-import uploadCropData
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -52,14 +51,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-//        uploadCropData(this)
-
-//        val prefs = getSharedPreferences("app", Context.MODE_PRIVATE)
-//
-//        if (!prefs.getBoolean("data_uploaded", false)) {
-//            uploadCropData(this)
-//            prefs.edit { putBoolean("data_uploaded", true) }
-//        }
 
         setContent {
             AgricultureAdvisoryAppTheme {
@@ -217,6 +208,13 @@ fun AppNavigationMain() {
             ProfileScreen(UserDetails.getEmail(context)!!, navController)
         }
 
+        composable(Screen.AboutApp.route)
+        {
+            AboutScreen(onBack = {
+                navController.popBackStack()
+            })
+        }
+
     }
 }
 
@@ -274,7 +272,7 @@ fun LaunchView() {
 
                 ) {
                 Button(
-                    onClick = { /* Handle login */ },
+                    onClick = { },
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
@@ -309,36 +307,7 @@ fun LaunchView() {
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                /*
-                Button(
-                    onClick = { /* Handle login */ },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally),
-                    contentPadding = PaddingValues(vertical = 12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.CoralRose),
-                        contentColor = colorResource(
-                            id = R.color.white
-                        )
-                    ),
-                    shape = RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = 0.dp,
-                        bottomStart = 16.dp,
-                        bottomEnd = 16.dp
-                    )
-                ) {
-                    Text(
-                        text = "Opportunities",
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                    )
-                }
-                */
-
             }
-
-
         }
     }
 

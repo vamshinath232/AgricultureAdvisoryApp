@@ -114,9 +114,9 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
                         Spacer(modifier = Modifier.width(6.dp))
                         Spacer(
                             modifier = Modifier
-                                .width(3.dp) // Width of the line
-                                .height(24.dp) // Adjust height as needed
-                                .background(Color.Gray) // Color of the line
+                                .width(3.dp)
+                                .height(24.dp)
+                                .background(Color.Gray)
                         )
                     }
                 },
@@ -141,15 +141,15 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
                         Spacer(modifier = Modifier.width(6.dp))
 
                         Icon(
-                            imageVector = Icons.Default.Email, // Replace with desired icon
+                            imageVector = Icons.Default.Email,
                             contentDescription = "Email Icon"
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Spacer(
                             modifier = Modifier
-                                .width(3.dp) // Width of the line
-                                .height(24.dp) // Adjust height as needed
-                                .background(Color.Gray) // Color of the line
+                                .width(3.dp)
+                                .height(24.dp)
+                                .background(Color.Gray)
                         )
                     }
                 },
@@ -183,9 +183,9 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
                         Spacer(modifier = Modifier.width(6.dp))
                         Spacer(
                             modifier = Modifier
-                                .width(3.dp) // Width of the line
-                                .height(24.dp) // Adjust height as needed
-                                .background(Color.Gray) // Color of the line
+                                .width(3.dp)
+                                .height(24.dp)
+                                .background(Color.Gray)
                         )
                     }
                 },
@@ -212,15 +212,15 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
                         Spacer(modifier = Modifier.width(6.dp))
 
                         Icon(
-                            imageVector = Icons.Default.Lock, // Replace with desired icon
+                            imageVector = Icons.Default.Lock,
                             contentDescription = "Email Password"
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Spacer(
                             modifier = Modifier
-                                .width(3.dp) // Width of the line
-                                .height(24.dp) // Adjust height as needed
-                                .background(Color.Gray) // Color of the line
+                                .width(3.dp)
+                                .height(24.dp)
+                                .background(Color.Gray)
                         )
                     }
                 },
@@ -294,7 +294,7 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
                 text = "Login Now",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black, // Blue text color for "Sign Up"
+                color = Color.Black,
                 modifier = Modifier.clickable {
                     onBackToLogin.invoke()
                 }
@@ -345,9 +345,3 @@ data class TesterData(
     var place: String = "",
     var password: String = ""
 )
-
-@Preview(showBackground = true)
-@Composable
-fun RegistrationActivityPreview() {
-//    CreateAccountActivityScreen()
-}

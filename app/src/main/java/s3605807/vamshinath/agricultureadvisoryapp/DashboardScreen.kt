@@ -159,7 +159,7 @@ fun HomeTopBar(navController: NavController) {
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent // 🔥 important for gradient
+                containerColor = Color.Transparent
             )
         )
     }
@@ -193,7 +193,6 @@ fun PremiumWeatherCard(
 
         Column {
 
-            // 📍 Location
             Text(
                 text = location,
                 color = Color.White,
@@ -202,7 +201,6 @@ fun PremiumWeatherCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // 🌡 Temperature
             Text(
                 text = temperature,
                 color = Color.White,
@@ -210,7 +208,6 @@ fun PremiumWeatherCard(
                 fontWeight = FontWeight.Bold
             )
 
-            // ☁️ Condition
             Text(
                 text = condition,
                 color = Color.White.copy(alpha = 0.9f)
@@ -218,7 +215,6 @@ fun PremiumWeatherCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 💧 Humidity + 🌧 Rain
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
@@ -261,7 +257,6 @@ fun PremiumQuickActions(navController: NavController) {
 
         Column {
 
-            // Row 1
             Row(modifier = Modifier.fillMaxWidth()) {
                 ActionItem(actions[0], Modifier.weight(1f), onClicked = {
                     navController.navigate(Screen.PestDetection.route)
@@ -274,7 +269,6 @@ fun PremiumQuickActions(navController: NavController) {
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            // Row 2
             Row(modifier = Modifier.fillMaxWidth()) {
                 ActionItem(actions[2], Modifier.weight(1f), onClicked = {
 
@@ -359,14 +353,13 @@ fun TipsSection() {
         Triple("Weed Control", "Remove weeds early", Icons.Default.Grass)
     )
 
-    // 🎨 Different soft gradients
     val gradients = listOf(
-        listOf(Color(0xFFE8F5E9), Color(0xFFC8E6C9)), // light green
-        listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB)), // light blue
-        listOf(Color(0xFFFFF8E1), Color(0xFFFFECB3)), // light yellow
-        listOf(Color(0xFFF3E5F5), Color(0xFFE1BEE7)), // light purple
-        listOf(Color(0xFFFFEBEE), Color(0xFFFFCDD2)), // light red
-        listOf(Color(0xFFE0F7FA), Color(0xFFB2EBF2))  // cyan
+        listOf(Color(0xFFE8F5E9), Color(0xFFC8E6C9)),
+        listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB)),
+        listOf(Color(0xFFFFF8E1), Color(0xFFFFECB3)),
+        listOf(Color(0xFFF3E5F5), Color(0xFFE1BEE7)),
+        listOf(Color(0xFFFFEBEE), Color(0xFFFFCDD2)),
+        listOf(Color(0xFFE0F7FA), Color(0xFFB2EBF2))
     )
 
     Column(modifier = Modifier.padding(12.dp)) {
@@ -390,8 +383,8 @@ fun TipsSection() {
                 Card(
                     modifier = Modifier
                         .padding(end = 10.dp)
-                        .width(200.dp)     // ✅ fixed width
-                        .height(140.dp),   // ✅ fixed height
+                        .width(200.dp)
+                        .height(140.dp),
                     shape = RoundedCornerShape(18.dp),
                     elevation = CardDefaults.cardElevation(6.dp)
                 ) {
@@ -407,7 +400,6 @@ fun TipsSection() {
                             modifier = Modifier.fillMaxSize()
                         ) {
 
-                            // 🌿 Icon
                             Icon(
                                 icon,
                                 contentDescription = null,
@@ -415,7 +407,6 @@ fun TipsSection() {
                                 modifier = Modifier.size(28.dp)
                             )
 
-                            // 🧾 Title + Desc
                             Column {
 
                                 Text(

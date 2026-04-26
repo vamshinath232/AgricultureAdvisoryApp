@@ -29,7 +29,7 @@ class ReportListViewModel(application: Application) : AndroidViewModel(applicati
     fun deleteReport(report: Report) {
         viewModelScope.launch {
             reportDao.deleteReport(report)
-            loadReports() // refresh list
+            loadReports()
         }
     }
 }

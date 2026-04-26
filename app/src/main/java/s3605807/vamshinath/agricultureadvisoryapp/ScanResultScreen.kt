@@ -165,7 +165,6 @@ fun ImagePreviewModern(uri: String, p1: Color, p2: Color) {
                     .height(240.dp)
             )
 
-            // 🌿 Overlay badge
             Box(
                 modifier = Modifier
                     .padding(12.dp)

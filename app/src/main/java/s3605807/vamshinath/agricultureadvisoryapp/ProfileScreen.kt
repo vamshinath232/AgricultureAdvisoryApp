@@ -77,7 +77,6 @@ fun ProfileScreen(
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
 
-    // 🔥 Fetch user data
     LaunchedEffect(Unit) {
         database.child(userEmail.replace(".", ","))
             .get()
@@ -113,7 +112,6 @@ fun ProfileScreen(
                 .padding(16.dp)
         ) {
 
-            // 🌿 Profile Header Card
             Card(
                 shape = RoundedCornerShape(24.dp),
                 elevation = CardDefaults.cardElevation(8.dp),
@@ -159,7 +157,6 @@ fun ProfileScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // 🌿 Info Card
             Card(
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(6.dp),
@@ -180,7 +177,6 @@ fun ProfileScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // 🔐 Update Password Section
             Text(
                 "Update Password",
                 fontWeight = FontWeight.Bold,

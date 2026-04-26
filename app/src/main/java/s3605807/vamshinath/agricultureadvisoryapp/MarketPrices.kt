@@ -32,7 +32,6 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
-// ---------------- DATA MODEL ----------------
 
 data class PricePoint(
     val month: String = "",
@@ -45,7 +44,6 @@ data class SellInsight(
     val suggestion: String
 )
 
-// ---------------- MONTH SORT ----------------
 
 fun sortByMonth(list: List<PricePoint>): List<PricePoint> {
     val order = listOf(
@@ -55,7 +53,6 @@ fun sortByMonth(list: List<PricePoint>): List<PricePoint> {
     return list.sortedBy { order.indexOf(it.month) }
 }
 
-// ---------------- FIREBASE FETCH ----------------
 
 fun fetchCropData(
     crop: String,
@@ -87,7 +84,6 @@ fun fetchCropData(
     }
 }
 
-// ---------------- AI LOGIC ----------------
 
 fun getBestSellMonth(data: List<PricePoint>): SellInsight {
 
@@ -101,7 +97,6 @@ fun getBestSellMonth(data: List<PricePoint>): SellInsight {
     )
 }
 
-// ---------------- CHART ----------------
 
 @Composable
 fun MultiLineChart(data: Map<String, List<PricePoint>>) {
@@ -156,7 +151,6 @@ fun MultiLineChart(data: Map<String, List<PricePoint>>) {
     )
 }
 
-// ---------------- UI SCREEN ----------------
 
 @Composable
 fun PriceTrendScreen(
@@ -181,7 +175,6 @@ fun PriceTrendScreen(
     var searchQuery by remember { mutableStateOf("") }
     var data by remember { mutableStateOf<Map<String, List<PricePoint>>>(emptyMap()) }
 
-    // 🔄 Fetch real Firebase data
     LaunchedEffect(selectedCrop) {
         fetchCropData(selectedCrop) {
             data = it
@@ -229,7 +222,7 @@ fun PriceTrendScreen(
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent // 🔥 important for gradient
+                        containerColor = Color.Transparent
                     )
                 )
             }
@@ -242,7 +235,6 @@ fun PriceTrendScreen(
                 .fillMaxSize()
         ) {
 
-            // 🔍 Search + Crop Chips
             item {
 
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -301,7 +293,6 @@ fun PriceTrendScreen(
                 }
             }
 
-            // 📊 Chart
             item {
                 AnimatedContent(targetState = data, label = "") {
                     if (it.isNotEmpty()) {
@@ -315,7 +306,6 @@ fun PriceTrendScreen(
                 }
             }
 
-            // 🤖 Insight Card
             item {
 
                 if (latestData.isNotEmpty()) {

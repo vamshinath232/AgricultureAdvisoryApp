@@ -214,8 +214,6 @@ fun WeatherSection(viewModel: WeatherViewModel = viewModel()) {
                     rainChance = "${data.current.precip_mm} mm"
                 )
             } else {
-//                Text("Loading weather...")
-
                 WeatherLoadingUI()
             }
         }
@@ -251,7 +249,6 @@ fun WeatherLoadingUI() {
                 modifier = Modifier.fillMaxWidth()
             ) {
 
-                // 🌤 Animated icon
                 val infiniteTransition = rememberInfiniteTransition()
                 val scale by infiniteTransition.animateFloat(
                     initialValue = 0.9f,
@@ -273,7 +270,6 @@ fun WeatherLoadingUI() {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 🔥 Title
                 Text(
                     text = "Fetching Weather...",
                     fontWeight = FontWeight.Bold,
@@ -283,7 +279,6 @@ fun WeatherLoadingUI() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // 📄 Subtitle
                 Text(
                     text = "Getting real-time weather data for your farm",
                     color = Color.Gray,
@@ -292,7 +287,6 @@ fun WeatherLoadingUI() {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 🌊 Progress bar
                 LinearProgressIndicator(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -309,7 +303,7 @@ fun WeatherLoadingUI() {
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LocationPermissionWrapper(
-    content: @Composable () -> Unit   // ✅ FIX HERE
+    content: @Composable () -> Unit
 ) {
 
     val permissionState = rememberPermissionState(
@@ -318,7 +312,7 @@ fun LocationPermissionWrapper(
 
     when {
         permissionState.status.isGranted -> {
-            content()   // ✅ now composable works
+            content()
         }
 
         permissionState.status.shouldShowRationale -> {
@@ -363,7 +357,6 @@ fun PermissionRequestUI(onClick: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                // 📍 Icon (Permission style)
                 Box(
                     modifier = Modifier
                         .size(70.dp)
@@ -381,7 +374,6 @@ fun PermissionRequestUI(onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 🔥 Title
                 Text(
                     text = "Location Permission Required",
                     fontSize = 20.sp,
@@ -392,7 +384,6 @@ fun PermissionRequestUI(onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // 📄 Description
                 Text(
                     text = "Allow location access to get accurate weather updates and nearby market prices for your farm.",
                     textAlign = TextAlign.Center,
@@ -403,7 +394,6 @@ fun PermissionRequestUI(onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // 🚀 Button
                 Button(
                     onClick = onClick,
                     modifier = Modifier
@@ -482,7 +472,6 @@ fun LocationDisabledUI(onEnableClick: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                // 📍 Icon
                 Box(
                     modifier = Modifier
                         .size(70.dp)
@@ -500,7 +489,6 @@ fun LocationDisabledUI(onEnableClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 🔥 Title
                 Text(
                     text = "Location Disabled",
                     fontSize = 20.sp,
@@ -510,7 +498,6 @@ fun LocationDisabledUI(onEnableClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // 📄 Description
                 Text(
                     text = "Enable location to receive accurate weather updates and nearby agricultural insights.",
                     textAlign = TextAlign.Center,
@@ -520,7 +507,6 @@ fun LocationDisabledUI(onEnableClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // 🚀 Button
                 Button(
                     onClick = onEnableClick,
                     modifier = Modifier

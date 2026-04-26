@@ -174,7 +174,6 @@ fun ReportItemCard(
     ) {
         Column {
 
-            // 🌿 Leaf Image
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -196,7 +195,6 @@ fun ReportItemCard(
                     .padding(12.dp)
             ) {
 
-                // 🔝 Header with Share + Delete
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,

@@ -38,19 +38,12 @@ import kotlinx.coroutines.launch
 import s3605807.vamshinath.agricultureadvisoryapp.LocationHelper
 import java.util.Locale
 
-/* ---------------------------------------------------------
-   DATA MODELS (WeatherAPI Forecast Response)
---------------------------------------------------------- */
 
 data class ForecastResponse(
     val location: Location,
     val forecast: Forecast
 )
 
-//data class Location(
-//    val name: String,
-//    val country: String
-//)
 
 data class Forecast(
     val forecastday: List<ForecastDay>
@@ -67,15 +60,6 @@ data class Day(
     val daily_chance_of_rain: Int,
     val condition: Condition
 )
-
-//data class Condition(
-//    val text: String,
-//    val icon: String
-//)
-
-/* ---------------------------------------------------------
-   SCREEN
---------------------------------------------------------- */
 
 @Composable
 fun WeatherForecastScreen(
@@ -171,7 +155,7 @@ fun WeatherForecastScreen(
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent // 🔥 important for gradient
+                        containerColor = Color.Transparent
                     )
                 )
             }
@@ -226,9 +210,6 @@ fun WeatherForecastScreen(
     }
 }
 
-/* ---------------------------------------------------------
-   HEADER CARD
---------------------------------------------------------- */
 
 @Composable
 fun WeatherHeaderCard() {
@@ -258,7 +239,6 @@ fun WeatherHeaderCard() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                // 🌦 Icon Container (Glass effect)
                 Box(
                     modifier = Modifier
                         .size(52.dp)
@@ -299,27 +279,22 @@ fun WeatherHeaderCard() {
     }
 }
 
-/* ---------------------------------------------------------
-   FORECAST ITEM CARD
---------------------------------------------------------- */
 
 @Composable
 fun ForecastDayCard(
     day: ForecastDay,
-    index: Int // 👈 pass position for variation + labels
+    index: Int
 ) {
 
     val condition = day.day.condition.text.lowercase()
     val temp = day.day.maxtemp_c
 
-    // 🌤 Label (Premium UX)
     val dayLabel = when (index) {
         0 -> "Today"
         1 -> "Tomorrow"
         else -> formatDate(day.date)
     }
 
-    // 🎨 Dynamic Gradient with variation
     val gradient = when {
         condition.contains("sun") || condition.contains("clear") -> {
             val shades = listOf(
@@ -345,7 +320,7 @@ fun ForecastDayCard(
 
     Card(
         shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(12.dp), // 🔥 more depth
+        elevation = CardDefaults.cardElevation(12.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp, horizontal = 12.dp)
@@ -361,7 +336,6 @@ fun ForecastDayCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                // 🌤 Icon Container (Improved contrast)
                 Box(
                     modifier = Modifier
                         .size(58.dp)
@@ -380,7 +354,6 @@ fun ForecastDayCard(
 
                 Spacer(modifier = Modifier.width(14.dp))
 
-                // 📅 Date + Condition
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -389,7 +362,7 @@ fun ForecastDayCard(
                         text = dayLabel,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 17.sp // 👈 slightly bigger
+                        fontSize = 17.sp
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -401,7 +374,6 @@ fun ForecastDayCard(
                     )
                 }
 
-                // 🌡 Temperature + Rain
                 Column(
                     horizontalAlignment = Alignment.End
                 ) {
@@ -410,7 +382,7 @@ fun ForecastDayCard(
                         text = "${day.day.maxtemp_c.toInt()}° / ${day.day.mintemp_c.toInt()}°",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp // 👈 reduced (better balance)
+                        fontSize = 14.sp
                     )
 
                     Spacer(modifier = Modifier.height(6.dp))
@@ -459,10 +431,6 @@ fun formatDate(date: String): String {
         date
     }
 }
-
-/* ---------------------------------------------------------
-   VIEWMODEL
---------------------------------------------------------- */
 
 
 
