@@ -271,7 +271,7 @@ fun ProfileScreen(
 
                     showLogoutDialog = false
 
-                    UserDetails.saveUserLoginStatus(context, false)
+                    UserDetails.findLoginStatus(context)
 
                     // Navigate to login screen
                     navController.navigate("login") {

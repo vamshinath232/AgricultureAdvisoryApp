@@ -73,9 +73,9 @@ fun AppNavigationMain() {
     ) {
 
         composable(Screen.Splash.route) {
-            SplashScreen(
+            LoadingLogic(
                 onNavigate = {
-                    if (UserDetails.getUserLoginStatus(context)) {
+                    if (UserDetails.findLoginStatus(context)) {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
@@ -205,7 +205,7 @@ fun AppNavigationMain() {
         }
 
         composable(Screen.Profile.route) {
-            ProfileScreen(UserDetails.getEmail(context)!!, navController)
+            ProfileScreen(UserDetails.findEmail(context)!!, navController)
         }
 
         composable(Screen.AboutApp.route)
@@ -239,7 +239,7 @@ sealed class Screen(val route: String) {
 
 
 @Composable
-fun SplashScreen(onNavigate: () -> Unit) {
+fun LoadingLogic(onNavigate: () -> Unit) {
 
     LaunchedEffect(Unit) {
         delay(3000)

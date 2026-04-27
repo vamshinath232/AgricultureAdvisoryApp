@@ -238,9 +238,9 @@ fun loginTester(testerData: TesterData, context: Context, onLoginSuccess: () -> 
             if (dbData != null) {
                 if (dbData.password == testerData.password) {
 
-                    UserDetails.saveUserLoginStatus(context, true)
-                    UserDetails.saveEmail(context, dbData.emailid)
-                    UserDetails.saveName(context, dbData.name)
+                    UserDetails.isUserLoggedIn(context, true)
+                    UserDetails.putUserEmail(context, dbData.emailid)
+                    UserDetails.putUserName(context, dbData.name)
 
 
                     Toast.makeText(context, "Login Sucessfully", Toast.LENGTH_SHORT).show()

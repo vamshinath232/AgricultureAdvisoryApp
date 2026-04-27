@@ -20,7 +20,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -173,13 +175,16 @@ fun CreateAccountScreen(onBackToLogin: () -> Unit) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Spacer(modifier = Modifier.width(6.dp))
 
-                        Image(
-                            modifier = Modifier
-                                .width(24.dp)
-                                .height(24.dp),
-                            painter = painterResource(id = R.drawable.profession),
-                            contentDescription = "Place",
-                        )
+//                        Image(
+//                            modifier = Modifier
+//                                .width(24.dp)
+//                                .height(24.dp),
+//                            painter = painterResource(id = R.drawable.profession),
+//                            contentDescription = "Place",
+//                        )
+
+                        Icon(Icons.Default.LocationOn, null, tint = Color.Gray)
+
                         Spacer(modifier = Modifier.width(6.dp))
                         Spacer(
                             modifier = Modifier
